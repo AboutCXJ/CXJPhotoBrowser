@@ -64,7 +64,7 @@
         _failLB.textAlignment = NSTextAlignmentCenter;
         _failLB.center = self.center;
         _failLB.text = @"网络不给力，图片下载失败";
-        _failLB.font = [UIFont boldSystemFontOfSize:20];
+        _failLB.font = [UIFont boldSystemFontOfSize:14];
         _failLB.textColor = [UIColor whiteColor];
         _failLB.backgroundColor = [UIColor clearColor];
         [self addSubview:_failLB];

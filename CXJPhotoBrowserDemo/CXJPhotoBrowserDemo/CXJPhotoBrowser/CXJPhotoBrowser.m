@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UICollectionViewFlowLayout *flow;
 @property (nonatomic, strong) NSArray<CXJPhoto *> *photos;//所以图片对象
+@property (nonatomic, assign) BOOL isFirstLoad;//第一次进入
 @end
 
 
@@ -35,32 +36,37 @@
     CXJPhotoBrowser *photoBrowser = [[CXJPhotoBrowser alloc] init];
     photoBrowser.photos = photos;
     
-    photoBrowser.view.alpha = 0.0;
-    photoBrowser.view.frame = superView.bounds;
-    [superView addSubview:photoBrowser.view];
-    
+//    photoBrowser.view.alpha = 0.0;
+//    photoBrowser.view.frame = superView.bounds;
+//    [superView addSubview:photoBrowser.view];
+//
     photoBrowser.indexView.amount = photos.count;
     photoBrowser.indexView.currentIndex = currentIndex;
     photoBrowser.currentIndex =currentIndex;
+//
+//    [UIView animateWithDuration:0.2 animations:^{
+//        photoBrowser.view.alpha = 1.0;
+//    }];
     
-    [UIView animateWithDuration:0.2 animations:^{
-        photoBrowser.view.alpha = 1.0;
-    }];
+    photoBrowser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [[photoBrowser topPresentedViewController] presentViewController:photoBrowser animated:YES completion:nil];
     return photoBrowser;
     
 }
 
 - (void)dismiss {
-    __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.2 animations:^{
-        weakSelf.view.alpha = 0.0;
-    } completion:^(BOOL finished) {
-        [weakSelf.view removeFromSuperview];
-    }];
+//    __weak typeof(self) weakSelf = self;
+//    [UIView animateWithDuration:0.2 animations:^{
+//        weakSelf.view.alpha = 0.0;
+//    } completion:^(BOOL finished) {
+//        [weakSelf.view removeFromSuperview];
+//    }];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.isFirstLoad = YES;
 }
 
 - (void)viewWillLayoutSubviews {
@@ -77,13 +83,24 @@
     }];
 }
 
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:_currentIndex inSection:0];
-    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    if (self.isFirstLoad) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:_currentIndex inSection:0];
+        [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+    }
+    self.isFirstLoad = NO;
+    
 }
+
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//
+//    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:_currentIndex inSection:0];
+//    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+//}
+
 
 #pragma mark - handle
 
@@ -98,7 +115,17 @@
         
     }];
 }
- 
+
+
+- (UIViewController *)topPresentedViewController{
+    UIViewController *ctr   = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIViewController *next  = ctr.presentedViewController;
+    while (next != nil && !next.isBeingDismissed) {
+        ctr     = next;
+        next    = ctr.presentedViewController;
+    }
+    return ctr;
+}
 
 
 
@@ -174,5 +201,10 @@
     }
     return _collectionView;
 }
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
 
 @end

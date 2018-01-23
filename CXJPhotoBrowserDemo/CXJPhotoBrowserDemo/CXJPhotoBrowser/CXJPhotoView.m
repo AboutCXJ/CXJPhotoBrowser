@@ -102,8 +102,8 @@
     
     {
         CGFloat scale = MIN(widthScale, heightScale);
-        self.scrollView.maximumZoomScale = 1/scale;
-        self.scrollView.minimumZoomScale = 1;
+//        self.scrollView.maximumZoomScale = 1/scale;
+//        self.scrollView.minimumZoomScale = 1;
         if (self.scrollView.zoomScale != 1.0f) {
             self.scrollView.zoomScale = 1.0f;
         }
@@ -198,7 +198,7 @@
 - (void)setPhoto:(CXJPhoto *)photo {
     _photo = photo;
     [self loadPhoto];
-    
+    [self adjustImageViewFrame];
 }
 
 - (UIScrollView *)scrollView {
