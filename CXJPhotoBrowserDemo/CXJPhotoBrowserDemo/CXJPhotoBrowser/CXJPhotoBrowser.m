@@ -196,6 +196,8 @@
         _collectionView.delegate = self;
         _collectionView.pagingEnabled = YES;
         _collectionView.backgroundColor = [UIColor blackColor];
+        _collectionView.showsVerticalScrollIndicator = NO;
+        _collectionView.showsHorizontalScrollIndicator = NO;
         [_collectionView registerClass:[CXJPhotoView class] forCellWithReuseIdentifier:@"CXJPhotoView"];
         [self.view addSubview:_collectionView];
     }
